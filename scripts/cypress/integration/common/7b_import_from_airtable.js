@@ -18,29 +18,16 @@ export const genTest = (apiType, dbType) => {
     before(() => {
       apiKey = Cypress.env("airtable").apiKey;
       sharedBase = Cypress.env("airtable").sharedBase;
+    });
+
+    it("Import", () => {
+      cy.log(apiKey, sharedBase);
 
       loginPage.signIn(roles.owner.credentials);
       projectsPage.createProject(
         { dbType: "none", apiType: "REST", name: "importSample" },
         {}
       );
-      cy.saveLocalStorage();
-    });
-
-    beforeEach(() => {
-      cy.restoreLocalStorage();
-    });
-
-    afterEach(() => {
-      cy.saveLocalStorage();
-    });
-
-    // after(() => {
-    //   cy.saveLocalStorage();
-    // });
-
-    it("Import", () => {
-      cy.log(apiKey, sharedBase);
 
       // trigger import
       cy.get(".nc-add-new-table").should("exist").trigger("mouseover");
