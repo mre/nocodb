@@ -35,6 +35,7 @@ let records2 = {
 let tn = ["Film", "Actor", "Producer"];
 
 let cn = [
+    "#",
   "Name",
   "Notes",
   "Status",
@@ -109,13 +110,14 @@ export const genTest = (apiType, dbType, testMode) => {
       if (testMode === "CY_QUICK") {
         // cy.task("copyFile")
         loginPage.signIn(roles.owner.credentials);
+
         projectsPage.openProject("sample");
 
-        // kludge: wait for page load to finish
-        cy.wait(2000);
-        cy.closeTableTab();
-      } else {
         cy.restoreLocalStorage();
+      } else {
+        cy.visit('/')
+
+        projectsPage.openProject("importSample");
       }
 
       cy.openTableTab("Film", 3);
@@ -143,14 +145,10 @@ export const genTest = (apiType, dbType, testMode) => {
 
     it("Verify Schema", () => {
       // verify if all tables exist
-      for (let i = 0; i < tn.length; i++) {
-        cy.get(`.nc-project-tree-tbl-${tn[i]}`).should("exist");
-      }
+      tn.forEach(tableName => cy.get(`.nc-project-tree-tbl-${tableName}`).should("exist"))
 
       // for Film table, verify columns
-      for (let i = 0; i < columnCount; i++) {
-        cy.get(`th[data-title="${cn[i]}"]`).should("exist");
-      }
+      cy.get('.nc-table-column').should("have.length", columnCount)
     });
 
     it("Verify Data types", () => {
