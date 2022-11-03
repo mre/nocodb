@@ -14,6 +14,8 @@ const readOnly = inject(ReadonlyInj, ref(false))
 
 const active = inject(ActiveCellInj, ref(false))
 
+const editable = inject(EditModeInj, ref(false))
+
 let isYearInvalid = $ref(false)
 
 const localState = $computed({
@@ -80,10 +82,10 @@ useSelectedCellKeyupListener(active, (e: KeyboardEvent) => {
     :placeholder="placeholder"
     :allow-clear="!readOnly"
     :input-read-only="true"
-    :open="readOnly && !active ? false : open"
+    :open="readOnly && !active && !editable ? false : open"
     :dropdown-class-name="`${randomClass} nc-picker-year ${open ? 'active' : ''}`"
-    @click="open = active && !open"
-    @change="open = active && !open"
+    @click="open = (active || editable) && !open"
+    @change="open = (active || editable) && !open"
   >
     <template #suffixIcon></template>
   </a-date-picker>

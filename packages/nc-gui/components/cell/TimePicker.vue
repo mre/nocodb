@@ -16,6 +16,8 @@ const readOnly = inject(ReadonlyInj, ref(false))
 
 const active = inject(ActiveCellInj, ref(false))
 
+const editable = inject(EditModeInj, ref(false))
+
 let isTimeInvalid = $ref(false)
 
 const dateFormat = isMysql.value ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD HH:mm:ssZ'
@@ -93,10 +95,10 @@ useSelectedCellKeyupListener(active, (e: KeyboardEvent) => {
     :placeholder="isTimeInvalid ? 'Invalid time' : ''"
     :allow-clear="!readOnly"
     :input-read-only="true"
-    :open="readOnly && !active ? false : open"
+    :open="readOnly && !active && !editable ? false : open"
     :popup-class-name="`${randomClass} nc-picker-time ${open ? 'active' : ''}`"
-    @click="open = active && !open"
-    @ok="open = active && !open"
+    @click="open = (active || editable) && !open"
+    @ok="open = (active || editable) && !open"
   >
     <template #suffixIcon></template>
   </a-time-picker>

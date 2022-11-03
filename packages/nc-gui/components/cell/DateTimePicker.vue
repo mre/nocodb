@@ -16,6 +16,8 @@ const readOnly = inject(ReadonlyInj, ref(false))
 
 const active = inject(ActiveCellInj, ref(false))
 
+const editable = inject(EditModeInj, ref(false))
+
 let isDateInvalid = $ref(false)
 
 const dateFormat = isMysql ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD HH:mm:ssZ'
@@ -83,9 +85,9 @@ useSelectedCellKeyupListener(active, (e: KeyboardEvent) => {
     :allow-clear="!readOnly"
     :input-read-only="true"
     :dropdown-class-name="`${randomClass} nc-picker-datetime ${open ? 'active' : ''}`"
-    :open="readOnly ? false : open && active"
+    :open="readOnly ? false : open && (active || editable)"
     :disabled="readOnly"
-    @click="open = active && !open"
+    @click="open = (active || editable) && !open"
     @ok="open = !open"
   >
     <template #suffixIcon></template>
